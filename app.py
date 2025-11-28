@@ -1,172 +1,122 @@
 import streamlit as st
 
-# -------------------- PAGE STYLE --------------------
 st.set_page_config(page_title="Digital Resolution Hub", layout="wide")
 
-# Custom CSS for colours, 3D buttons & layout
+# --- CUSTOM STYLING ---
 st.markdown("""
 <style>
-
-body {
-    background-color: #f5f7fa;
-}
-
-/* Title styling */
-h1 {
-    color: #1f3c88;
-    font-weight: 900;
-}
-
-/* Subheader */
-h3 {
-    color: #0d1b2a;
-    font-weight: 700;
-}
-
-/* Card container */
-.issue-card {
-    background: white;
-    padding: 18px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease;
-}
-
-.issue-card:hover {
-    transform: scale(1.02);
-}
-
-/* Trendy 3D buttons */
-.stButton>button {
-    background: linear-gradient(145deg, #ffffff, #dfe4ea);
-    border-radius: 12px;
-    padding: 12px 18px;
-    width: 100%;
-    color: #1f3c88;
-    border: 2px solid #e1e5eb;
-    font-weight: 700;
-    box-shadow: 4px 4px 10px #cbd3dd, -4px -4px 10px #ffffff;
-    transition: 0.3s;
-}
-
-.stButton>button:hover {
-    background: #1f3c88;
-    color: white;
-    border: 2px solid #1f3c88;
-    transform: translateY(-3px);
-}
-
+    .issue-button {
+        background-color: #f7f7f9;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        text-align: center;
+        transition: 0.2s;
+        cursor: pointer;
+        font-weight: 600;
+        color: #333;
+    }
+    .issue-button:hover {
+        background-color: #e8f0fe;
+        transform: translateY(-3px);
+        border-color: #b3c7ff;
+    }
+    .issue-container {
+        margin-bottom: 20px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# -------------------- TITLE --------------------
 st.title("📱 Digital Resolution Hub")
-st.write("Your quick, guided digital troubleshooting companion.Brought to you by 'The Digital Support Team'.")
+st.write("Select an issue type below to view the resolution instantly — no scrolling needed.")
 
-st.write("---")
-
-# -------------------- DATA --------------------
+# --- DATA STORE ---
 issues = {
     "Forgot Password": {
-        "steps": """1. Tap **Forgot Password** on login
-2. Enter **ID number**
-3. Enter **OTP**
-4. Reset password and login""",
+        "steps": """1. Go to App login screen → Tap 'Forgot Password'
+2. Enter ID number
+3. Confirm OTP
+4. Reset password and confirm login""",
         "time": "5 mins",
         "escalate": "OTP not received after 3 attempts",
-        "tools": "App"
+        "tools": "Internet banking & App"
     },
-
     "Forgot all login credentials": {
-        "steps": """1. Tap **Forgot all login credentials**
-2. Enter **ID number**
-3. Reset username & password
-4. Login""",
+        "steps": """1. Go to App login screen → Tap 'Forgot all login credentials'
+2. Verify ID number
+3. Reset username & password via OTP
+4. Confirm login""",
         "time": "6 mins",
         "escalate": "Verification fails 3 times",
         "tools": "App"
     },
-
     "Pin Blocked": {
-        "steps": """1. Tap **Unblock PIN**
-2. Validate ID + DOB
+        "steps": """1. Open app → Select 'Unblock PIN'
+2. Validate ID & DOB
 3. Confirm OTP
 4. Set new PIN""",
         "time": "3 mins",
-        "escalate": "Validation fails",
+        "escalate": "App unresponsive or validation fails",
         "tools": "Internet banking"
     },
-
     "Sim Override (For Branch)": {
-        "steps": """1. Verify ID
-2. Use device change portal
-3. Confirm OTP""",
+        "steps": """1. Verify ID number
+2. Use self-service device change portal
+3. Confirm via OTP""",
         "time": "10 mins",
-        "escalate": "ID mismatch",
+        "escalate": "ID mismatch or OTP fails",
         "tools": "-"
     },
-
     "App Slow Response": {
         "steps": """1. Clear app cache
 2. Restart device
-3. If issue persists, escalate""",
+3. If issue persists, escalate to technical support""",
         "time": "5 mins",
-        "escalate": "Still slow after restart",
-        "tools": "Device"
+        "escalate": "Issue persists after cache clear & restart",
+        "tools": "Client's device (Help navigate)"
     },
-
     "Unable to Register (Profile deleted)": {
-        "steps": """1. Check if profile deleted
-2. Re-register
-3. Confirm with OTP""",
+        "steps": """1. Confirm if account is deleted
+2. Guide client to re-register
+3. Assist with verification via OTP""",
         "time": "8 mins",
-        "escalate": "Account not found",
+        "escalate": "Database mismatch or account not found",
         "tools": "-"
     },
-
     "Registration": {
-        "steps": """1. Enter personal details
-2. Confirm OTP
-3. Activate account""",
+        "steps": """1. Open registration page
+2. Enter ID & personal details
+3. Confirm OTP
+4. Activate account""",
         "time": "8 mins",
-        "escalate": "Verification error",
+        "escalate": "System rejects ID or verification error",
         "tools": "-"
     }
 }
 
-# -------------------- ISSUE SELECTION --------------------
-st.subheader("Select an Issue Type")
+# --- TWO-COLUMN LAYOUT ---
+left_col, right_col = st.columns([1, 2])
 
-cols = st.columns(3)
-issue_list = list(issues.keys())
+# LEFT SIDE = BUTTONS
+with left_col:
+    st.subheader("🧩 Issue Types")
+    for issue in issues.keys():
+        if st.button(issue, key=issue):
+            st.session_state["selected_issue"] = issue
 
-for i, issue in enumerate(issue_list):
-    if cols[i % 3].button(issue):
-        st.session_state["selected_issue"] = issue
+# RIGHT SIDE = DETAILS (SHOW IMMEDIATELY)
+with right_col:
+    if "selected_issue" in st.session_state:
+        data = issues[st.session_state["selected_issue"]]
 
-st.write("---")
+        st.markdown(f"## 🔍 {st.session_state['selected_issue']}")
 
-# -------------------- DISPLAY INFORMATION --------------------
-if "selected_issue" in st.session_state:
-    data = issues[st.session_state["selected_issue"]]
+        st.markdown("### 🛠 Digital Resolution Steps")
+        st.code(data["steps"])
 
-    st.markdown(
-        f"<div class='issue-card'>"
-        f"<h2>🔍 {st.session_state['selected_issue']}</h2>"
-        f"</div>",
-        unsafe_allow_html=True
-    )
-
-    st.markdown("### 🛠 Digital Resolution Steps")
-    st.code(data["steps"])
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric("⏱ Expected Resolution Time", data["time"])
-
-    with col2:
-        st.metric("⚠️ Escalate If…", data["escalate"])
-
-    with col3:
-        st.metric("🔗 Tools / Links", data["tools"])
+        c1, c2, c3 = st.columns(3)
+        c1.metric("⏱ Expected Time", data["time"])
+        c2.metric("⚠️ Escalate If", data["escalate"])
+        c3.metric("🔗 Tools", data["tools"])
+    else:
+        st.info("Select an issue from the left to view details.")
