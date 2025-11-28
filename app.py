@@ -61,7 +61,7 @@ h3 {
 
 # -------------------- TITLE --------------------
 st.title("📱 Digital Resolution Hub")
-st.write("Your quick, guided digital troubleshooting companion.Brought to you Digital Support Team")
+st.write("Your quick, guided digital troubleshooting companion.Brought to you by 'The Digital Support Team'.")
 
 st.write("---")
 
