@@ -27,7 +27,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("📱 Digital Resolution Hub")
+st.title("📱 FAQ...Our Solutions Hub")
 st.write("Select an issue type below to view the resolution instantly — no scrolling needed.")
 
 # --- DATA STORE ---
