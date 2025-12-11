@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="Digital Resolution Hub", layout="wide")
+st.set_page_config(page_title="FAQ...Our Solutions Hub", layout="wide")
 
 # --- CUSTOM STYLING ---
 st.markdown("""
